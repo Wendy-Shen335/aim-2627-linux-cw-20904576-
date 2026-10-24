@@ -6,3 +6,17 @@ input=${1:?需要输入目录}
 output=${2:?需要输出目录}
 
 # TODO：删除下方提示和 exit 77，再填写你的命令。
+source "$input/launch.env"
+if bash "$LAUNCH_TOOL" "$MODEL_PATH" "$CAMERA_PATH" > "$output/stdout.log" 2> "$output/stderr.log"; then
+    code=0
+else
+    code=$?
+fi
+printf '%s\n' "$code" > "$output/exit-code.txt"
+if [ "$code" -eq 0 ] ; then
+    printf '%s\n' "result=SUCCESS" "exit_code=0" "reason=NONE" > "$output/report.txt"
+elif [ "$code" -eq 10 ] ; then
+    printf '%s\n' "result=FAILED" "exit_code=10" "reason=MODEL_MISSING" > "$output/report.txt"
+else
+    printf '%s\n' "result=FAILED" "exit_code=20" "reason=CAMERA_DENIED" > "$output/report.txt"
+fi
