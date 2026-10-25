@@ -6,5 +6,9 @@ input=${1:?需要输入目录}
 output=${2:?需要输出目录}
 
 # TODO：删除下方提示和 exit 77，再填写你的命令。
-printf '%s\n' 'Q7 尚未实现' >&2
-exit 77
+mkdir -p "$output/received"
+source "$input/remote.env"
+printf 'Host aim-sentry\n HostName "%s"\n Port "%s"\n User "%s"\n IdentityFile "%s"\n UserKnownHostsFile "%s"\n IdentitiesOnly yes\n StrictHostKeyChecking yes\n BatchMode yes\n' "$HOST" "$PORT" "$REMOTE_USER" "$KEY_PATH" "$KNOWN_HOSTS" > "$output/ssh_config"
+chmod 600 "$output/ssh_config"
+ssh -F "$output/ssh_config" aim-sentry whoami > "$output/remote-user.txt"
+scp -F "$output/ssh_config" "aim-sentry:$REMOTE_LOG" "$output/received/errors.log"

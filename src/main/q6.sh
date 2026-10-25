@@ -7,5 +7,5 @@ output=${2:?需要输出目录}
 
 # TODO：删除下方提示和 exit 77，再填写你的命令。
 mkdir -p "$output/sysroot"
-dpkg -i "$input/aim-sentry-tools.deb" --root="$output/sysroot" --force-not-root --log=/dev/null
+dpkg --root="$output/sysroot" --force-not-root --log=/dev/null -i "$input/aim-sentry-tools.deb"
 "$output/sysroot/usr/bin/aim-sentry-info" > "$output/tool-output.txt"
